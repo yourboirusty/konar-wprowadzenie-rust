@@ -134,6 +134,36 @@ fn main() {
 
 
         </section>
+        <section data-auto-animate>
+          <h3>Naprawione</h3>
+          <pre data-id="vector"><code data-noescape data-trim>
+fn hold_my_vec<T>(_: &Vec<T>) {}
+
+fn main() {
+  let v = vec![2, 3, 5, 7, 11, 13, 17];
+  hold_my_vec(&v);
+  let element = v.get(3);
+
+  println!("I got this element from the vector: {:?}", element);
+}
+            </code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Zepsute</h3>
+          <pre data-id="vector"><code data-noescape data-trim>
+fn mut_my_vec<T>(v: &mut Vec<T>) {
+  vec.push(T::new())
+}
+
+fn main() {
+  let v = vec![2, 3, 5, 7, 11, 13, 17];
+  hold_my_vec(&mut v);
+  let element = v.get(3);
+
+  println!("I got this element from the vector: {:?}", element);
+}
+            </code></pre>
+        </section>
       </section>
 
       <section>
@@ -178,7 +208,7 @@ fn parse_version(header: &amp;[u8]) -&gt; Result&lt;Version, &amp;&apos;static s
 let version = parse_version(&amp;[1, 2, 3, 4])?;
 </code></pre>
         </section>
-        <section>
+        <section data-auto-animate>
           <h3>Zawsze masz pewność, że coś zostanie zwrócone</h3>
 <pre><code data-id="some_handling">fn divide(numerator: f64, denominator: f64) -&gt; Option&lt;f64&gt; {
     if denominator == 0.0 {
@@ -195,7 +225,7 @@ match result {
     None    =&gt; println!(&quot;Cannot divide by 0&quot;),
 }</code></pre>
         </section>
-        <section>
+        <section data-auto-animate>
           <h3>Zawsze masz pewność, że coś zostanie zwrócone</h3>
 <pre><code data-id="some_handling">fn divide(numerator: f64, denominator: f64) -&gt; Option&lt;f64&gt; {
     if denominator == 0.0 {
@@ -208,20 +238,210 @@ match result {
 let result = divide(2.0, 3.0).unwrap();
 </code></pre>
         </section>
-        <section>
+        <section data-auto-animate>
           <h3>Enumy na sterydach</h3>
+          <pre data-id="enum"><code data-trim data-noescape>enum IpAddrKind {
+    V4,
+    V6,
+}
+
+fn main() {
+    let four = IpAddrKind::V4;
+    let six = IpAddrKind::V6;
+
+    route(IpAddrKind::V4);
+    route(IpAddrKind::V6);
+}
+
+fn route(ip_kind: IpAddrKind) {}
+          </code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Enum jako rodzaj</h3>
+          <pre data-id="enum"><code data-trim data-noescape>fn main() {
+    enum IpAddrKind {
+        V4,
+        V6,
+    }
+
+    struct IpAddr {
+        kind: IpAddrKind,
+        address: String,
+    }
+
+    let home = IpAddr {
+        kind: IpAddrKind::V4,
+        address: String::from("127.0.0.1"),
+    };
+
+    let loopback = IpAddr {
+        kind: IpAddrKind::V6,
+        address: String::from("::1"),
+    };
+}
+          </code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Enum jako rodzaj, tylko lepiej</h3>
+          <pre data-id="enum"><code data-trim data-noescape>fn main() {
+    enum IpAddr {
+        V4(String),
+        V6(String),
+    }
+
+    let home = IpAddr::V4(String::from("127.0.0.1"));
+
+    let loopback = IpAddr::V6(String::from("::1"));
+}
+          </code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Enum jako rodzaj, tylko jeszcze lepiej</h3>
+          <pre data-id="enum"><code data-trim data-noescape>fn main() {
+    enum IpAddr {
+        V4(u8, u8, u8, u8),
+        V6(String),
+    }
+
+    let home = IpAddr::V4(127, 0, 0, 1);
+
+    let loopback = IpAddr::V6(String::from("::1"));
+}
+          </code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Enum jako rodzaj, tylko uniwersalny</h3>
+          <pre data-id="enum"><code data-trim data-noescape>enum Option<T> {
+    None,
+    Some(T),
+}
+</code></pre>
+        </section>
+        <section data-auto-animate>
+         <h3>Match binding</h3> 
+          <pre><code data-trim data-noescape>#[derive(Debug)]
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+
+fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; 1,
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter(state) =&gt; {
+            println!(&quot;State quarter from {:?}!&quot;, state);
+            25
+        }
+    }
+}
+
+fn main() {
+    value_in_cents(Coin::Quarter(UsState::Alaska));
+}
+          </code></pre>
+          
         </section>
       </section>
     
       <section>
         <section>
           <h2>Struct</h2>
+          <pre><code data-trim data-noescape>struct Point(i32, i32, i32);
+
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    location: Point,
+    sign_in_count: u64,
+}
+
+impl User {
+  fn get_city(&self) -> String {
+    // --snip--
+  }
+}
+          </code></pre>
         </section>
-        <section>
+        <section data-auto-animate>
           <h3>Interfejsy</h3>
+          <pre><code data-trim data-noescape>
+
+pub trait Summary {
+    fn summarize(&self) -> String;
+}
+
+pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&self) -> String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
+    }
+}
+          </code></pre>
         </section>
-        <section>
+        <section data-auto-animate>
+         <h3>Interfejsy</h3> 
+         <pre><code data-trim data-noescape>pub fn notify(item: &impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}</code></pre>
+        </section>
+        <section data-auto-animate>
           <h3>Makro</h3>
+          <pre><code data-trim data-noescape>#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {:?}", rect1);
+}
+          </code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Makro</h3>
+          <pre><code data-trim data-noescape>#echo "adiós" > spanish.in
+fn main() {
+    let bytes = include_bytes!("spanish.in");
+    assert_eq!(bytes, b"adi\xc3\xb3s\n");
+    print!("{}", String::from_utf8_lossy(bytes));
+}
+#cargo run
+#> adiós</code></pre>
         </section>
       </section>
 
@@ -231,18 +451,33 @@ let result = divide(2.0, 3.0).unwrap();
         </section>
         <section>
           <h3>Cargo</h3>
-          <li>Menedżer paczek</li>
-          <li>Narzędzie do budowania</li>
-          <li>Generator dokumentacji</li>
-          <li>Linter</li>
-          <li>Framework do testów</li>
-          <li>Framework do benchmarkowania</li>
+          <li class="fragment">Menedżer paczek</li>
+          <li class="fragment">Narzędzie do budowania</li>
+          <li class="fragment">Generator dokumentacji</li>
+          <li class="fragment">Linter</li>
+          <li class="fragment">Framework do testów</li>
+          <li class="fragment">Framework do benchmarkowania</li>
         </section>
         <section>
           <h3>Wieloplatformowość</h3>
+          <img src="dist/media/images/rust-T1-targets.png">
+        </section>
+        <section>
+          <h3>Tier1 to nie wszystko</h3>
+          <a href="https://doc.rust-lang.org/nightly/rustc/platform-support.html#tier-2">Tier 2 też działa!</a>
+        </section>
+        <section>
+          <h3>W sam raz na płytkę!</h3>
+          <li class="fragment">180 paczek oznaczonych hal-embedded.</li>
+          <li class="fragment">Paczki takie jak embedded-graphics.</li>
+          <li class="fragment">Debugger.</li>
         </section>
         <section>
           <h3>Potężne std</h3>
+          <li class="fragment">boolean</li>
+          <li class="fragment">vector</li>
+          <li class="fragment">String</li>
+          <li class="fragment">smart pointery</li>
         </section>
         <section>
           <h3>Dokumentacja</h3>
@@ -250,6 +485,12 @@ let result = divide(2.0, 3.0).unwrap();
         <section>
           <h3>Społeczność</h3>
         </section>
+      </section>
+      <section>
+        <h2>Dziękuję za uwagę</h2>
+        <a href="mailto:kornel@koszela.me">kornel@koszela.me</a>
+        <br>
+        <a href="https://wprowadzenie-rust.koszela.me/">wprowadzenie-rust.koszela.me</a>
       </section>
     </div>
   </div>
