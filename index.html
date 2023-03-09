@@ -1,0 +1,278 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>KoNaR|Krótkie wprowadzenie do Rusta</title>
+
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="dist/theme/rusty.css">
+
+  <!-- Theme used for syntax highlighted code -->
+  <link rel="stylesheet" href="plugin/highlight/monokai.css">
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h2 class="r-fit-text">Krótkie wprowadzenie do Rusta</h2>
+        <h3>Programowanie 2.0</h3>
+        <p>Kornel Koszela<br><a style="font-size:smaller" href="mailto:kornel@koszela.me">kornel@koszela.me</a>
+        </p>
+
+        <p style="font-size:small">KoNaR, 9.03.2023</p>
+      </section>
+      <section>
+        <section>
+          <h2>Po co to komu?</h2>
+        </section>
+        <section data-auto-animate>
+          <h3>Rodzaje języków</h3>
+          <ul>
+            <li class="fragment">Kompilowane i interpretowane</li>
+            <li class="fragment">Typowane statycznie i dynamicznie</li>
+            <li class="fragment">Nisko i wysokopoziomowe</li>
+            <li class="fragment">Funkcyjne i obiektowe</li>
+            <li class="fragment">Zarządzające pamięcią i niebezpieczne</li>
+          </ul>
+        </section>
+        <section data-auto-animate data-auto-animate-id="memory">
+          <h3>Bezpieczeństwo pamięci</h3>
+          <img src="dist/media/images/no_memory_leak.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="memory">
+          <h3>Bezpieczeństwo pamięci</h3>
+          <img src="dist/media/images/memory_leak.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="memory">
+          <h3>Bezpieczeństwo pamięci</h3>
+          <img src="dist/media/images/garbage_collector_simple.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="memory">
+          <h3>Bezpieczeństwo pamięci</h3>
+          <img src="dist/media/images/garbage_collector_real.png">
+        </section>
+        <section data-auto-animate data-auto-animate-id="memory">
+          <h3>Bezpieczeństwo pamięci</h3>
+          <img src="dist/media/images/memory_leak_java.png">
+        </section>
+      </section>
+
+
+      <section>
+        <section data-auto-animate>
+          <h2>Rust</h2>
+          <img src="dist/media/images/ferris.png">
+        </section>
+
+        <section data-auto-animate>
+          <h2>Rust</h2>
+          <img src="dist/media/images/ferris_alternatyfka.png">
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Borrow checker</h2>
+          <li class="fragment">Upraszcza zarządzanie pamięcią</li>
+          <li class="fragment">Minimalizuje ryzyko wielokrotnego zapisu</li>
+          <li class="fragment">Wymaga wprawy</li>
+          <li class="fragment">Niektóre rzeczy ciężko zrobić <a
+              href="https://rust-unofficial.github.io/too-many-lists/index.html">
+              (linked listy)</a>
+          </li>
+        </section>
+        <section>
+          <h2>Dwie zasady</h2>
+          <li class="fragment">Przekazując zmienną do innej funkcji, "oddajesz" ją</li>
+          <li class="fragment">Możesz mieć nieskończoną liczbę niemutowalnych referencji, ale tylko jedną mutowalną</li>
+        </section>
+
+        <section data-auto-animate>
+          <h3>Przykład</h3>
+          <pre data-id="vector"><code data-noescape data-trim>
+fn hold_my_vec<T>(_: Vec<T>) {}
+
+fn main() {
+  let v = vec![2, 3, 5, 7, 11, 13, 17];
+  hold_my_vec(v);
+
+  println!("I got this element from the vector: {:?}", element);
+}
+            </code></pre>
+
+        </section>
+
+        <section data-auto-animate>
+          <h3>Przykład</h3>
+          <pre data-id="vector"><code data-noescape data-trim>
+fn hold_my_vec<T>(_: Vec<T>) {}
+
+fn main() {
+  let v = vec![2, 3, 5, 7, 11, 13, 17];
+  hold_my_vec(v);
+  let element = v.get(3);
+
+  println!("I got this element from the vector: {:?}", element);
+}
+            </code></pre>
+        </section>
+        <section>
+          <h3>Błąd</h3>
+          <pre><code data-noescape data-trim>error[E0382]: borrow of moved value: `v`
+--> src/main.rs:6:19
+          |
+        4 |     let v = vec![2, 3, 5, 7, 11, 13, 17];
+          |         - move occurs because `v` has type `std::vec::Vec<i32>`, which does not implement the `Copy` trait
+        5 |     hold_my_vec(v);
+          |                 - value moved here
+        6 |     let element = v.get(3);
+          |                   ^ value borrowed here after move</code></pre>
+
+
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Obsługa wyjątków</h2>
+        </section>
+        <section data-auto-animate>
+          <h3>Zawsze wiesz, że funkcja może się wysypać</h3>
+          <pre data-id="error_handing"><code>#[derive(Debug)]
+enum Version { Version1, Version2 }
+
+fn parse_version(header: &amp;[u8]) -&gt; Result&lt;Version, &amp;&apos;static str&gt; {
+    match header.get(0) {
+        None =&gt; Err(&quot;invalid header length&quot;),
+        Some(&amp;1) =&gt; Ok(Version::Version1),
+        Some(&amp;2) =&gt; Ok(Version::Version2),
+        Some(_) =&gt; Err(&quot;invalid version&quot;),
+    }
+}
+
+let version = parse_version(&amp;[1, 2, 3, 4]);
+match version {
+    Ok(v) =&gt; println!(&quot;working with version: {v:?}&quot;),
+    Err(e) =&gt; println!(&quot;error parsing header: {e:?}&quot;),
+}
+</code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Zawsze wiesz, że funkcja może się wysypać</h3>
+          <pre data-id="error_handing"><code>#[derive(Debug)]
+enum Version { Version1, Version2 }
+
+fn parse_version(header: &amp;[u8]) -&gt; Result&lt;Version, &amp;&apos;static str&gt; {
+    match header.get(0) {
+        None =&gt; Err(&quot;invalid header length&quot;),
+        Some(&amp;1) =&gt; Ok(Version::Version1),
+        Some(&amp;2) =&gt; Ok(Version::Version2),
+        Some(_) =&gt; Err(&quot;invalid version&quot;),
+    }
+}
+
+let version = parse_version(&amp;[1, 2, 3, 4])?;
+</code></pre>
+        </section>
+        <section>
+          <h3>Zawsze masz pewność, że coś zostanie zwrócone</h3>
+<pre><code data-id="some_handling">fn divide(numerator: f64, denominator: f64) -&gt; Option&lt;f64&gt; {
+    if denominator == 0.0 {
+        None
+    } else {
+        Some(numerator / denominator)
+    }
+}
+
+let result = divide(2.0, 3.0);
+
+match result {
+    Some(x) =&gt; println!(&quot;Result: {x}&quot;),
+    None    =&gt; println!(&quot;Cannot divide by 0&quot;),
+}</code></pre>
+        </section>
+        <section>
+          <h3>Zawsze masz pewność, że coś zostanie zwrócone</h3>
+<pre><code data-id="some_handling">fn divide(numerator: f64, denominator: f64) -&gt; Option&lt;f64&gt; {
+    if denominator == 0.0 {
+        None
+    } else {
+        Some(numerator / denominator)
+    }
+}
+
+let result = divide(2.0, 3.0).unwrap();
+</code></pre>
+        </section>
+        <section>
+          <h3>Enumy na sterydach</h3>
+        </section>
+      </section>
+    
+      <section>
+        <section>
+          <h2>Struct</h2>
+        </section>
+        <section>
+          <h3>Interfejsy</h3>
+        </section>
+        <section>
+          <h3>Makro</h3>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Inne dobroci</h2>
+        </section>
+        <section>
+          <h3>Cargo</h3>
+          <li>Menedżer paczek</li>
+          <li>Narzędzie do budowania</li>
+          <li>Generator dokumentacji</li>
+          <li>Linter</li>
+          <li>Framework do testów</li>
+          <li>Framework do benchmarkowania</li>
+        </section>
+        <section>
+          <h3>Wieloplatformowość</h3>
+        </section>
+        <section>
+          <h3>Potężne std</h3>
+        </section>
+        <section>
+          <h3>Dokumentacja</h3>
+        </section>
+        <section>
+          <h3>Społeczność</h3>
+        </section>
+      </section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/markdown/markdown.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/zoom/zoom.js"></script>
+
+  <script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+      hash: true,
+      controls: true,
+      slideNumber: true,
+      transitionSpeed: 'fast',
+      // Learn about plugins: https://revealjs.com/plugins/
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom]
+    });
+  </script>
+</body>
+
+</html>
