@@ -75,6 +75,15 @@
           <br>
           <i>Nie jestem jak pozostałe języki</i>
         </section>
+        <section data-auto-animate>
+          <h2>Rust</h2>   
+          <li>Kompilowany</li>
+          <li>Statycznie typowany</li>
+          <li>Wysokopoziomowy</li>
+          <li>Obiektowy</li>
+          <li>Bez garbage collectora</li>
+          <li class="fragment">Z zapewnionym bezpieczeństwem pamięci</li>
+        </section>
       </section>
       <section>
         <section>
@@ -153,13 +162,13 @@ fn main() {
         <section data-auto-animate>
           <h3>Zepsute</h3>
           <pre data-id="vector"><code data-noescape data-trim>
-fn mut_my_vec<T>(v: &mut Vec<T>) {
+fn mut_my_vec<T>(v: &Vec<T>) {
   vec.push(T::new())
 }
 
 fn main() {
   let v = vec![2, 3, 5, 7, 11, 13, 17];
-  hold_my_vec(&mut v);
+  hold_my_vec(&v);
   let element = v.get(3);
 
   println!("I got this element from the vector: {:?}", element);
@@ -169,77 +178,6 @@ fn main() {
       </section>
 
       <section>
-        <section>
-          <h2>Obsługa wyjątków</h2>
-        </section>
-        <section data-auto-animate>
-          <h3>Zawsze wiesz, że funkcja może się wysypać</h3>
-          <pre data-id="error_handing"><code>#[derive(Debug)]
-enum Version { Version1, Version2 }
-
-fn parse_version(header: &amp;[u8]) -&gt; Result&lt;Version, &amp;&apos;static str&gt; {
-    match header.get(0) {
-        None =&gt; Err(&quot;invalid header length&quot;),
-        Some(&amp;1) =&gt; Ok(Version::Version1),
-        Some(&amp;2) =&gt; Ok(Version::Version2),
-        Some(_) =&gt; Err(&quot;invalid version&quot;),
-    }
-}
-
-let version = parse_version(&amp;[1, 2, 3, 4]);
-match version {
-    Ok(v) =&gt; println!(&quot;working with version: {v:?}&quot;),
-    Err(e) =&gt; println!(&quot;error parsing header: {e:?}&quot;),
-}
-</code></pre>
-        </section>
-        <section data-auto-animate>
-          <h3>Zawsze wiesz, że funkcja może się wysypać</h3>
-          <pre data-id="error_handing"><code>#[derive(Debug)]
-enum Version { Version1, Version2 }
-
-fn parse_version(header: &amp;[u8]) -&gt; Result&lt;Version, &amp;&apos;static str&gt; {
-    match header.get(0) {
-        None =&gt; Err(&quot;invalid header length&quot;),
-        Some(&amp;1) =&gt; Ok(Version::Version1),
-        Some(&amp;2) =&gt; Ok(Version::Version2),
-        Some(_) =&gt; Err(&quot;invalid version&quot;),
-    }
-}
-
-let version = parse_version(&amp;[1, 2, 3, 4])?;
-</code></pre>
-        </section>
-        <section data-auto-animate>
-          <h3>Zawsze masz pewność, że coś zostanie zwrócone</h3>
-<pre><code data-id="some_handling">fn divide(numerator: f64, denominator: f64) -&gt; Option&lt;f64&gt; {
-    if denominator == 0.0 {
-        None
-    } else {
-        Some(numerator / denominator)
-    }
-}
-
-let result = divide(2.0, 3.0);
-
-match result {
-    Some(x) =&gt; println!(&quot;Result: {x}&quot;),
-    None    =&gt; println!(&quot;Cannot divide by 0&quot;),
-}</code></pre>
-        </section>
-        <section data-auto-animate>
-          <h3>Zawsze masz pewność, że coś zostanie zwrócone</h3>
-<pre><code data-id="some_handling">fn divide(numerator: f64, denominator: f64) -&gt; Option&lt;f64&gt; {
-    if denominator == 0.0 {
-        None
-    } else {
-        Some(numerator / denominator)
-    }
-}
-
-let result = divide(2.0, 3.0).unwrap();
-</code></pre>
-        </section>
         <section data-auto-animate>
           <h3>Enumy na sterydach</h3>
           <pre data-id="enum"><code data-trim data-noescape>enum IpAddrKind {
@@ -357,7 +295,81 @@ fn main() {
     
       <section>
         <section>
-          <h2>Struct</h2>
+          <h2>Obsługa wyjątków</h2>
+        </section>
+        <section data-auto-animate>
+          <h3>Zawsze wiesz, że funkcja może się wysypać</h3>
+          <pre data-id="error_handing"><code>#[derive(Debug)]
+enum Version { Version1, Version2 }
+
+fn parse_version(header: &amp;[u8]) -&gt; Result&lt;Version, &amp;&apos;static str&gt; {
+    match header.get(0) {
+        None =&gt; Err(&quot;invalid header length&quot;),
+        Some(&amp;1) =&gt; Ok(Version::Version1),
+        Some(&amp;2) =&gt; Ok(Version::Version2),
+        Some(_) =&gt; Err(&quot;invalid version&quot;),
+    }
+}
+
+let version = parse_version(&amp;[1, 2, 3, 4]);
+match version {
+    Ok(v) =&gt; println!(&quot;working with version: {v:?}&quot;),
+    Err(e) =&gt; println!(&quot;error parsing header: {e:?}&quot;),
+}
+</code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Zawsze wiesz, że funkcja może się wysypać</h3>
+          <pre data-id="error_handing"><code>#[derive(Debug)]
+enum Version { Version1, Version2 }
+
+fn parse_version(header: &amp;[u8]) -&gt; Result&lt;Version, &amp;&apos;static str&gt; {
+    match header.get(0) {
+        None =&gt; Err(&quot;invalid header length&quot;),
+        Some(&amp;1) =&gt; Ok(Version::Version1),
+        Some(&amp;2) =&gt; Ok(Version::Version2),
+        Some(_) =&gt; Err(&quot;invalid version&quot;),
+    }
+}
+
+let version = parse_version(&amp;[1, 2, 3, 4])?;
+</code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Zawsze masz pewność, że coś zostanie zwrócone</h3>
+<pre><code data-id="some_handling">fn divide(numerator: f64, denominator: f64) -&gt; Option&lt;f64&gt; {
+    if denominator == 0.0 {
+        None
+    } else {
+        Some(numerator / denominator)
+    }
+}
+
+let result = divide(2.0, 3.0);
+
+match result {
+    Some(x) =&gt; println!(&quot;Result: {x}&quot;),
+    None    =&gt; println!(&quot;Cannot divide by 0&quot;),
+}</code></pre>
+        </section>
+        <section data-auto-animate>
+          <h3>Zawsze masz pewność, że coś zostanie zwrócone</h3>
+<pre><code data-id="some_handling">fn divide(numerator: f64, denominator: f64) -&gt; Option&lt;f64&gt; {
+    if denominator == 0.0 {
+        None
+    } else {
+        Some(numerator / denominator)
+    }
+}
+
+let result = divide(2.0, 3.0).unwrap();
+</code></pre>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Klasy</h2>
           <pre><code data-trim data-noescape>struct Point(i32, i32, i32);
 
 struct User {
